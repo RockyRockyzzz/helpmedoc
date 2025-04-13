@@ -14,14 +14,14 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 st.set_page_config(page_title="HelpMeDoc", layout="centered")
 
-st.title("HelpMeDoc – Medical Assistant for Foreigners in Korea")
+st.title("🦉 HelpMeDoc – Medical Assistant for Foreigners in Korea")
 st.image("dori.png", width=150, caption="Dori, your AI medical assistant 🦉")
-st.markdown("Get help with symptoms, hospital navigation, and medication instructions.")
 
-menu = st.sidebar.selectbox("Choose a service", ["Chat with Dori", "Interpret Medication Image"])
+menu = st.sidebar.selectbox("Choose a service", ["💬 Chat with Dori", "💊 Interpret Medication Image"])
 
-if menu == "Chat with Dori":
+if menu == "💬 Chat with Dori":
     user_input = st.text_input("Type your medical-related question here (in English)...")
+
     if user_input:
         messages = [
             {
@@ -38,18 +38,38 @@ This should be shown even if the user doesn’t specify a region."""
             },
             {"role": "user", "content": user_input}
         ]
-        with st.spinner("GPT is typing..."):
+
+        with st.spinner("Dori is thinking..."):
             try:
                 response = client.chat.completions.create(
                     model="gpt-3.5-turbo",
                     messages=messages
                 )
-                st.success("Response:")
-                st.write(response.choices[0].message.content)
-            except Exception as e:
-                st.error(f"Error: {e}")
+                gpt_reply = response.choices[0].message.content
 
-elif menu == "Interpret Medication Image":
+                # User bubble
+                user_col1, user_col2 = st.columns([9, 1])
+                with user_col1:
+                    st.markdown(
+                        f'<div style="background-color: #dbeafe; padding: 10px 15px; border-radius: 12px; display: inline-block; margin-bottom: 10px;"><b>You:</b> {user_input}</div>',
+                        unsafe_allow_html=True
+                    )
+                with user_col2:
+                    st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/Sample_User_Icon.png/240px-Sample_User_Icon.png", width=40)
+
+                # Dori bubble
+                dori_col1, dori_col2 = st.columns([1, 9])
+                with dori_col1:
+                    st.image("dori_2D.png", width=40)
+                with dori_col2:
+                    st.markdown(
+                        f'<div style="background-color: #f1f3f5; padding: 10px 15px; border-radius: 12px; display: inline-block;"><b>Dori:</b> {gpt_reply}</div>',
+                        unsafe_allow_html=True
+                    )
+            except Exception as e:
+                st.error(f"GPT Error: {e}")
+
+elif menu == "💊 Interpret Medication Image":
     uploaded_file = st.file_uploader("Upload a picture of your medication label", type=["png", "jpg", "jpeg"])
     if uploaded_file:
         try:
@@ -70,7 +90,7 @@ elif menu == "Interpret Medication Image":
                 },
                 {"role": "user", "content": text}
             ]
-            with st.spinner("GPT is typing..."):
+            with st.spinner("Dori is thinking..."):
                 try:
                     response = client.chat.completions.create(
                         model="gpt-3.5-turbo",
