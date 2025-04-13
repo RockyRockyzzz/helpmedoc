@@ -115,7 +115,7 @@ elif menu == "💊 Interpret Medication Image":
                         "- Translate only the essential information clearly and simply\n"
                         "- If any part is unclear, say 'not clearly recognized'\n"
                         "- Do not change the drug names. Do not guess unknown drugs\n"
-                        "- Be very cautious with dosage and purpose. Do not invent anything.""},
+                        "- Be very cautious with dosage and purpose. Do not invent anything."},
                 {"role": "user", "content": text}
             ]
             with st.spinner("Dori is analyzing the image..."):
