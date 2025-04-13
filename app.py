@@ -35,7 +35,7 @@ if menu == "💬 Chat with Dori":
     user_input = st.text_input("Ask Dori about symptoms, clinics, or emergencies...")
 
     if user_input:
-        messages = [if user_input:
+        
         messages = [
             {
                 "role": "system",
@@ -60,8 +60,7 @@ Always remind the user this is not a medical diagnosis and they should seek help
             },
             {"role": "user", "content": user_input}
         ]
-            {"role": "user", "content": user_input}
-        ]
+            
         with st.spinner("Dori is thinking..."):
             try:
                 response = client.chat.completions.create(model="gpt-3.5-turbo", messages=messages)
