@@ -15,6 +15,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 st.set_page_config(page_title="HelpMeDoc", layout="centered")
 
 st.title("HelpMeDoc – Medical Assistant for Foreigners in Korea")
+st.image("dori.png", width=150, caption="Dori, your AI medical assistant 🦉")
 st.markdown("Get help with symptoms, hospital navigation, and medication instructions.")
 
 menu = st.sidebar.selectbox("Choose a service", ["Chat with Dori", "Interpret Medication Image"])
