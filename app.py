@@ -5,6 +5,18 @@ import easyocr
 from PIL import Image
 import os
 import re
+import pandas as pd
+import folium
+from streamlit_folium import st_folium
+import os
+
+@st.cache_data
+def load_hospital_data():
+    path = "hospital_sample.csv"
+    if not os.path.exists(path):
+        st.error("🚨 병원 데이터 파일(hospital_sample.csv)을 찾을 수 없습니다.")
+        return pd.DataFrame()
+    return pd.read_csv(path)
 
 # Load environment variables
 load_dotenv()
@@ -15,7 +27,7 @@ st.set_page_config(page_title="HelpMeDoc", layout="centered")
 st.title("🦉 HelpMeDoc – Medical Assistant for Foreigners in Korea")
 st.image("dori.png", width=150, caption="Dori, your AI medical assistant 🦉")
 
-menu = st.sidebar.selectbox("Choose a service", ["💬 Chat with Dori", "💊 Interpret Medication Image"])
+menu = st.sidebar.selectbox("Choose a service", ["💬 Chat with Dori", "💊 Interpret Medication Image", "🏥 병원 탐색"])
 
 def display_medication_cards(gpt_text):
     drugs = re.split(r"(?=Drug name:)", gpt_text.strip())
@@ -138,3 +150,36 @@ elif menu == "💊 Interpret Medication Image":
                     st.error(f"GPT Error: {e}")
         except Exception as e:
             st.error(f"OCR Error: {e}")
+elif menu == "🏥 병원 탐색":
+    df = load_hospital_data()
+    if df.empty:
+        st.warning("병원 데이터가 없습니다.")
+    else:
+        st.subheader("🏥 병원 탐색")
+        region = st.text_input("지역 입력 (예: 서울, 경기, 부산)")
+        department = st.selectbox("진료과목", ["전체", "내과", "정형외과"])
+
+        filtered = df.copy()
+        if region:
+            filtered = filtered[filtered["주소"].str.contains(region)]
+        if department != "전체":
+            filtered = filtered[filtered["진료과목"] == department]
+
+        st.markdown(f"🔍 총 {len(filtered)}개 병원 검색됨")
+
+        if not filtered.empty:
+            m = folium.Map(location=[filtered["위도"].mean(), filtered["경도"].mean()], zoom_start=12)
+            for _, row in filtered.iterrows():
+                folium.Marker(
+                    location=[row["위도"], row["경도"]],
+                    popup=f"{row['병원명']}<br>{row['주소']}",
+                    tooltip=row["병원명"],
+                ).add_to(m)
+            st_folium(m, width=700, height=500)
+
+        for _, row in filtered.iterrows():
+            st.markdown(f"""**{row['병원명']}**  
+{row['주소']}  
+{row['전화번호']}  
+[카카오맵으로 보기](https://map.kakao.com/?q={row['병원명']})  
+---""")
