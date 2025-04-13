@@ -143,6 +143,7 @@ elif menu == "💊 Interpret Medication Image":
                         "- Identify each drug name separately\n"
                         "- For each drug, list: the drug name, purpose, dosage instructions (e.g., how many times per day), and storage method\n"
                         "- Translate only the essential information clearly and simply\n"
+                        "- You will receive OCR text with potential recognition errors.\n"
                         "- If any part is unclear, say 'not clearly recognized'\n"
                         "- Do not change the drug names. Do not guess unknown drugs\n"
                         "- Be very cautious with dosage and purpose. Do not invent anything."},
