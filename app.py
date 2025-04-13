@@ -14,13 +14,21 @@ st.set_page_config(page_title="HelpMeDoc", layout="centered")
 st.title("💬 HelpMeDoc – Medical Assistant for Foreigners in Korea")
 st.markdown("Get help with symptoms, hospital navigation, and medication instructions.")
 
-menu = st.sidebar.selectbox("Choose a service", ["🩺 Chat with GPT", "💊 Interpret Medication Image"])
+menu = st.sidebar.selectbox("Choose a service", ["🦉 Chat with Dori", "💊 Interpret Medication Image"])
 
-if menu == "🩺 Chat with GPT":
+if menu == "🦉 Chat with Dori":
     user_input = st.text_input("Type your medical-related question here (in English)...")
     if user_input:
         messages = [
-            {"role": "system", "content": "You are a helpful Korean medical chatbot for foreigners. Answer in simple English. Do not make medical diagnoses."},
+            {
+                "role": "system",
+                "content": (
+                    "You are a friendly and knowledgeable medical assistant helping foreigners living in Korea. "
+                    "You help them understand symptoms in simple English, and tell them which department (진료과) to visit at a Korean hospital. "
+                    "Give clear, non-diagnostic guidance and practical tips like what kind of clinic to visit, how to say symptoms in Korean, and whether it's urgent. "
+                    "Do not make medical diagnoses or suggest medications. Avoid suggesting generic home remedies unless no other option is relevant."
+                )
+            },
             {"role": "user", "content": user_input}
         ]
         with st.spinner("GPT is typing..."):
@@ -44,13 +52,19 @@ elif menu == "💊 Interpret Medication Image":
         st.code(text)
         st.subheader("💬 GPT Explanation")
         messages = [
-            {"role": "system", "content": "You are an assistant that explains Korean medication instructions to foreigners in simple English. Do not change the dosage, just explain clearly."},
+            {
+                "role": "system",
+                "content": (
+                    "You are an assistant that explains Korean medication instructions to foreigners in simple English. "
+                    "Do not change the dosage, just explain clearly what the instructions mean."
+                )
+            },
             {"role": "user", "content": text}
         ]
         with st.spinner("GPT is typing..."):
             try:
                 response = client.chat.completions.create(
-                    model="gpt-4",
+                    model="gpt-3.5-turbo",
                     messages=messages
                 )
                 st.success("Response:")
