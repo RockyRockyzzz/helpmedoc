@@ -1,16 +1,9 @@
 import streamlit as st
 from openai import OpenAI
 from dotenv import load_dotenv
-import pytesseract
-
-# Windows용 Tesseract 실행 파일 경로 설정
-pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-
+import easyocr
 from PIL import Image
 import os
-
-print(os.path.exists(r"C:\Program Files\Tesseract-OCR\tesseract.exe"))
-
 
 # Load environment variables
 load_dotenv()
@@ -79,7 +72,12 @@ elif menu == "💊 Interpret Medication Image":
             image = Image.open(uploaded_file)
             st.image(image, caption="Uploaded Image", use_column_width=True)
 
-            text = pytesseract.image_to_string(image, lang='kor', config='--psm 6')
+            # OCR with EasyOCR
+            with st.spinner("Extracting text using OCR..."):
+                reader = easyocr.Reader(['ko'], gpu=False)
+                result = reader.readtext(image, detail=0)
+                text = "\n".join(result)
+
             st.subheader("📝 Detected Text from Image")
             st.code(text)
 
