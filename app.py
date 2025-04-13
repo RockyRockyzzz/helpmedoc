@@ -8,6 +8,20 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import folium
 from streamlit_folium import st_folium
+def display_medication_cards(text):
+    for block in text.strip().split("\n\n"):
+        if block.strip():
+            st.markdown(f"""
+            <div style='
+                background-color: #e6f2f1;
+                border-radius: 12px;
+                padding: 12px;
+                margin-bottom: 10px;
+                font-size: 16px;
+            '>
+            {block.strip().replace("\\n", "<br>")}
+            </div>
+            """, unsafe_allow_html=True)
 
 # 설정
 st.set_page_config(page_title="HelpMeDoc", layout="centered")
