@@ -1,64 +1,41 @@
 import streamlit as st
-from openai import OpenAI
-from dotenv import load_dotenv
+import pandas as pd
+import os
+import numpy as np
 import easyocr
 from PIL import Image
-import os
-import re
-import pandas as pd
+from openai import OpenAI
+from dotenv import load_dotenv
 import folium
 from streamlit_folium import st_folium
-import os
 
+# 설정
+st.set_page_config(page_title="HelpMeDoc", layout="centered")
+st.title("🦉 HelpMeDoc – Medical Assistant for Foreigners in Korea")
+
+# 환경변수 로딩
+load_dotenv()
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+# 사이드바 메뉴
+menu = st.sidebar.selectbox("Choose a service", ["💬 Chat with Dori", "💊 Interpret Medication Image", "🏥 Hospital Finder"])
+
+# 병원 데이터 불러오기
 @st.cache_data
 def load_hospital_data():
     path = "hospital_sample.csv"
     if not os.path.exists(path):
-        st.error("🚨 병원 데이터 파일(hospital_sample.csv)을 찾을 수 없습니다.")
+        st.error("🚨 hospital_sample.csv 파일이 존재하지 않습니다.")
         return pd.DataFrame()
     return pd.read_csv(path)
 
-# Load environment variables
-load_dotenv()
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-st.set_page_config(page_title="HelpMeDoc", layout="centered")
-
-st.title("🦉 HelpMeDoc – Medical Assistant for Foreigners in Korea")
-st.image("dori.png", width=150, caption="Dori, your AI medical assistant 🦉")
-
-menu = st.sidebar.selectbox("Choose a service", ["💬 Chat with Dori", "💊 Interpret Medication Image", "🏥 병원 탐색"])
-
-def display_medication_cards(gpt_text):
-    drugs = re.split(r"(?=Drug name:)", gpt_text.strip())
-
-    for drug in drugs:
-        lines = drug.strip().splitlines()
-        if not lines or not lines[0].startswith("Drug name:"):
-            continue
-
-        name = lines[0].replace("Drug name:", "").strip()
-        purpose = dosage = storage = "Not specified"
-
-        for line in lines[1:]:
-            if "Purpose:" in line:
-                purpose = line.replace("Purpose:", "").strip()
-            elif "Dosage instructions:" in line:
-                dosage = line.replace("Dosage instructions:", "").strip()
-            elif "Storage method:" in line:
-                storage = line.replace("Storage method:", "").strip()
-
-        with st.container():
-            st.markdown("----")
-            st.subheader(f"💊 {name}")
-            st.markdown(f"**📌 Purpose:** {purpose}")
-            st.markdown(f"**🕐 Dosage:** {dosage}")
-            st.markdown(f"**📦 Storage:** {storage}")
-
+# 💬 Chatbot
 if menu == "💬 Chat with Dori":
-    user_input = st.text_input("Type your medical-related question here (in English)...")
+    st.image("dori_2d.png", width=60)
+    user_input = st.text_input("Ask Dori about symptoms, clinics, or emergencies...")
 
     if user_input:
+        messages = [if user_input:
         messages = [
             {
                 "role": "system",
@@ -83,20 +60,34 @@ Always remind the user this is not a medical diagnosis and they should seek help
             },
             {"role": "user", "content": user_input}
         ]
-
+            {"role": "user", "content": user_input}
+        ]
         with st.spinner("Dori is thinking..."):
             try:
-                response = client.chat.completions.create(
-                    model="gpt-3.5-turbo",
-                    messages=messages
-                )
-                st.success("Dori's Response:")
-                st.write(response.choices[0].message.content)
+                response = client.chat.completions.create(model="gpt-3.5-turbo", messages=messages)
+                with st.container():
+                    col1, col2 = st.columns([1, 5])
+                    with col1:
+                        st.image("dori_2d.png", width=60)
+                    with col2:
+                        st.markdown(f"""
+                        <div style='
+                            background-color: #d1f3ef;
+                            padding: 12px 16px;
+                            border-radius: 12px;
+                            margin-top: 4px;
+                            font-size: 16px;
+                            line-height: 1.5;
+                        '>
+                        {response.choices[0].message.content}
+                        </div>
+                        """, unsafe_allow_html=True)
             except Exception as e:
                 st.error(f"GPT Error: {e}")
 
+# 💊 OCR 해석
 elif menu == "💊 Interpret Medication Image":
-    st.markdown("### 📷 사진 촬영 가이드")
+    st.markdown("### 📷 약 사진 촬영 가이드")
     st.info("""
 - 빛 반사 없이 찍어주세요  
 - 종이를 펼쳐서 정면에서 찍어주세요  
@@ -104,28 +95,19 @@ elif menu == "💊 Interpret Medication Image":
 - 표 전체보다 '약 정보가 있는 부분' 중심으로 찍는 것이 더 정확합니다
     """)
 
-    uploaded_file = st.file_uploader("Upload a picture of your medication label", type=["png", "jpg", "jpeg"])
-
+    uploaded_file = st.file_uploader("Upload your medication image", type=["png", "jpg", "jpeg"])
     if uploaded_file:
         try:
             image = Image.open(uploaded_file)
+            image_np = np.array(image)
             st.image(image, caption="Uploaded Image", use_column_width=True)
 
-            # OCR with EasyOCR
-            with st.spinner("Extracting text using OCR..."):
-                reader = easyocr.Reader(['ko'], gpu=False)
-                result = reader.readtext(image, detail=0)
-                text = "\n".join(result)
+            reader = easyocr.Reader(['ko'], gpu=False)
+            result = reader.readtext(image_np, detail=0)
+            text = " ".join(result)
 
-            st.subheader("📝 Detected Text from Image")
-            st.code(text)
-
-            st.subheader("💬 Explanation by Dori")
             messages = [
-                {
-                    "role": "system",
-                    "content": (
-                        "You are an assistant that helps foreigners understand Korean medication instructions.\n"
+                {"role": "system", "content": "You are an assistant that helps foreigners understand Korean medication instructions.\n"
                         "You will receive text extracted from an image using OCR.\n\n"
                         "Please:\n"
                         "- Identify each drug name separately\n"
@@ -133,9 +115,7 @@ elif menu == "💊 Interpret Medication Image":
                         "- Translate only the essential information clearly and simply\n"
                         "- If any part is unclear, say 'not clearly recognized'\n"
                         "- Do not change the drug names. Do not guess unknown drugs\n"
-                        "- Be very cautious with dosage and purpose. Do not invent anything."
-                    )
-                },
+                        "- Be very cautious with dosage and purpose. Do not invent anything.""},
                 {"role": "user", "content": text}
             ]
             with st.spinner("Dori is analyzing the image..."):
@@ -150,13 +130,14 @@ elif menu == "💊 Interpret Medication Image":
                     st.error(f"GPT Error: {e}")
         except Exception as e:
             st.error(f"OCR Error: {e}")
-elif menu == "🏥 병원 탐색":
+# 🏥 병원 탐색
+elif menu == "🏥 Hospital Finder":
     df = load_hospital_data()
     if df.empty:
-        st.warning("병원 데이터가 없습니다.")
+        st.warning("No hospital data found.")
     else:
         st.subheader("🏥 병원 탐색")
-        region = st.text_input("지역 입력 (예: 서울, 경기, 부산)")
+        region = st.text_input("지역을 입력하세요 (예: 서울, 경기, 부산)", "")
         department = st.selectbox("진료과목", ["전체", "내과", "정형외과"])
 
         filtered = df.copy()
