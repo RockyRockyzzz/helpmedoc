@@ -105,8 +105,8 @@ elif menu == "💊 Interpret Medication Image":
                 result = reader.readtext(image, detail=0)
                 text = "\n".join(result)
 
-            st.subheader("📝 Detected Text from Image")
-            st.code(text)
+            #st.subheader("📝 Detected Text from Image")
+            #st.code(text)
 
             st.subheader("💬 Explanation by Dori")
             messages = [
