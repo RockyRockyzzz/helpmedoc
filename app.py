@@ -79,7 +79,25 @@ Always remind the user this is not a medical diagnosis and they should seek help
                     messages=messages
                 )
                 st.success("Dori's Response:")
-                st.write(response.choices[0].message.content)
+                with st.container():
+                    col1, col2 = st.columns([1, 5])
+                    with col1:
+                        st.image("dori_2d.png", width=60)
+                    with col2:
+                        st.markdown(f"""
+                        <div style='
+                            background-color: #f0f2f6;
+                            padding: 12px 16px;
+                            border-radius: 12px;
+                            margin-top: 4px;
+                            font-size: 16px;
+                            line-height: 1.5;
+                        '>
+                        {response.choices[0].message.content}
+                        </div>
+                        """, unsafe_allow_html=True)
+
+                
             except Exception as e:
                 st.error(f"GPT Error: {e}")
 
