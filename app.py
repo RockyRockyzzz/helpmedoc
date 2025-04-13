@@ -9,6 +9,7 @@ pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tessera
 from PIL import Image
 import os
 
+print(os.path.exists(r"C:\Program Files\Tesseract-OCR\tesseract.exe"))
 
 
 # Load environment variables
