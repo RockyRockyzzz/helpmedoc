@@ -141,11 +141,21 @@ elif menu == "💊 Interpret Medication Image":
                         "You will receive OCR text with potential recognition errors.\n"
                         "Correct the content and rewrite it clearly in a medication guide format, "
                         "showing drug names, dosage, purpose, cautions, and storage instructions.\n"
-                        """  - Always respond using the following format in English:
-                              Drug name: ...
-                              Purpose: ...
-                              Dosage instructions: ...
-                              Storage method: ... """
+                        """  You will receive OCR text that may contain Korean drug names.
+
+                                Your task is to:
+                                1. Extract each drug name exactly as it appears.
+                                2. For each drug name, only include it if it matches a real, known medication used in Korea.
+                                3. If you are unsure about a drug name or it appears incorrect, say: "Drug name not recognized".
+                                4. Do NOT attempt to correct or guess unknown names.
+                                5. Do NOT include drugs that don't appear in actual medical usage or public drug lists.
+
+                                For each valid drug, use the following format:
+
+                                Drug name: <name>
+                                Purpose: <short, simple explanation in English>
+                                Dosage instructions: <extracted dosage>
+                                Storage method: <if available> """
 
                         "If unclear, write 'uncertain' and avoid guessing new drug names."
                         "- Be very cautious with dosage and purpose. Do not invent anything."},
