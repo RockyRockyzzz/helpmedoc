@@ -138,14 +138,10 @@ elif menu == "💊 Interpret Medication Image":
 
             messages = [
                 {"role": "system", "content": "You are an assistant that helps foreigners understand Korean medication instructions.\n"
-                        "You will receive text extracted from an image using OCR.\n\n"
-                        "Please:\n"
-                        "- Identify each drug name separately\n"
-                        "- For each drug, list: the drug name, purpose, dosage instructions (e.g., how many times per day), and storage method\n"
-                        "- Translate only the essential information clearly and simply\n"
-                        "- You will receive OCR text with potential recognition errors.\n"
-                        "- If any part is unclear, say 'not clearly recognized'\n"
-                        "- Do not change the drug names. Do not guess unknown drugs\n"
+                        "You will receive OCR text with potential recognition errors.\n"
+                        "Correct the content and rewrite it clearly in a medication guide format, "
+                        "showing drug names, dosage, purpose, cautions, and storage instructions.\n"
+                        "If unclear, write 'uncertain' and avoid guessing new drug names."
                         "- Be very cautious with dosage and purpose. Do not invent anything."},
                 {"role": "user", "content": text}
             ]
