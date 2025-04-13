@@ -16,6 +16,7 @@ st.set_page_config(page_title="HelpMeDoc", layout="centered")
 
 st.title("🦉 HelpMeDoc – Medical Assistant for Foreigners in Korea")
 st.image("dori.png", width=150, caption="Dori, your AI medical assistant 🦉")
+st.markdown("[👉 HelpMeDoc Notion 소개페이지](https://abrasive-gasosaurus-3c6.notion.site/HelpmeDoc-1d4ea8139a5c8024a06dc4622b50aaea?pvs=4)", unsafe_allow_html=True)
 
 menu = st.sidebar.selectbox("Choose a service", ["💬 Chat with Dori", "💊 Interpret Medication Image"])
 
