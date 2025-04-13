@@ -26,6 +26,7 @@ def display_medication_cards(text):
 # 설정
 st.set_page_config(page_title="HelpMeDoc", layout="centered")
 st.title("🦉 HelpMeDoc – Medical Assistant for Foreigners in Korea")
+st.image("dori.png", width=150, caption="Dori, your AI medical assistant 🦉")
 
 # 환경변수 로딩
 load_dotenv()
