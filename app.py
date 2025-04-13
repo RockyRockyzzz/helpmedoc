@@ -141,21 +141,22 @@ elif menu == "💊 Interpret Medication Image":
                         "You will receive OCR text with potential recognition errors.\n"
                         "Correct the content and rewrite it clearly in a medication guide format, "
                         "showing drug names, dosage, purpose, cautions, and storage instructions.\n"
-                        """  You will receive OCR text that may contain Korean drug names.
+                        """  You will receive OCR-extracted Korean medication information.
 
-                                Your task is to:
-                                1. Extract each drug name exactly as it appears.
-                                2. For each drug name, only include it if it matches a real, known medication used in Korea.
-                                3. If you are unsure about a drug name or it appears incorrect, say: "Drug name not recognized".
-                                4. Do NOT attempt to correct or guess unknown names.
-                                5. Do NOT include drugs that don't appear in actual medical usage or public drug lists.
+Your job is to:
+1. Extract the drug names exactly as they appear.
+2. For each drug, if the name matches a real Korean medication, explain normally.
+3. If the name seems slightly incorrect or misspelled, try to guess the most likely correct name.
+4. In that case, clearly indicate that the name may be inaccurate.
+5. Use this format for each drug:
 
-                                For each valid drug, use the following format:
+Drug name: <OCR name> (possibly: <best guess>)  
+Purpose: <explanation in English>  
+Dosage instructions: <as extracted>  
+Storage method: <if mentioned>
 
-                                Drug name: <name>
-                                Purpose: <short, simple explanation in English>
-                                Dosage instructions: <extracted dosage>
-                                Storage method: <if available> """
+Only explain what can be reasonably inferred from the text. If unclear, say: 'not clearly recognized'.
+ """
 
                         "If unclear, write 'uncertain' and avoid guessing new drug names."
                         "- Be very cautious with dosage and purpose. Do not invent anything."},
