@@ -2,9 +2,6 @@ import streamlit as st
 from openai import OpenAI
 from dotenv import load_dotenv
 import pytesseract
-pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
-# 이미지에서 텍스트 추출
-text = pytesseract.image_to_string(image)
 from PIL import Image
 import os
 
@@ -50,6 +47,10 @@ elif menu == "💊 Interpret Medication Image":
     if uploaded_file:
         image = Image.open(uploaded_file)
         st.image(image, caption="Uploaded Image", use_column_width=True)
+        text = pytesseract.image_to_string(image)
+        
+        pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"  # OCR 경로 명시
+
         text = pytesseract.image_to_string(image)
         st.subheader("📝 Detected Text")
         st.code(text)
