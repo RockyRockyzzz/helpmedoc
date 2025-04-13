@@ -1,5 +1,9 @@
 streamlit
-easyocr
 openai
 python-dotenv
-pillow
+pandas
+numpy
+easyocr
+Pillow
+folium
+streamlit-folium
