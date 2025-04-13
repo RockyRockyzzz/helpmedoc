@@ -2,6 +2,9 @@ import streamlit as st
 from openai import OpenAI
 from dotenv import load_dotenv
 import pytesseract
+pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
+# 이미지에서 텍스트 추출
+text = pytesseract.image_to_string(image)
 from PIL import Image
 import os
 
