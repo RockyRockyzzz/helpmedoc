@@ -9,8 +9,7 @@ pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tessera
 from PIL import Image
 import os
 
-# Set tesseract command path
-pytesseract.pytesseract.tesseract_cmd = "/usr/bin/tesseract"
+
 
 # Load environment variables
 load_dotenv()
