@@ -1,6 +1,7 @@
 import streamlit as st
 from openai import OpenAI
 from dotenv import load_dotenv
+from display_cards import display_medication_cards
 import easyocr
 from PIL import Image
 import os
@@ -39,11 +40,7 @@ Classify into:
 2. Concerning – Recommend clinic within 24h for symptoms like moderate pain, ongoing fever, worsening conditions.
 3. Mild – Suggest monitoring and clinic if no improvement in 1–2 days.
 
-"You are an assistant that helps foreigners understand Korean medication instructions.\n"
-"You will receive OCR text with potential recognition errors.\n"
-"Correct the content and rewrite it clearly in a medication guide format, "
-"showing drug names, dosage, purpose, cautions, and storage instructions.\n"
-"If unclear, write 'uncertain' and avoid guessing new drug names."
+
 
 Always remind the user this is not a medical diagnosis and they should seek help if unsure.
 """
@@ -101,6 +98,11 @@ elif menu == "💊 Interpret Medication Image":
                         "- If any part is unclear, say 'not clearly recognized'\n"
                         "- Do not change the drug names. Do not guess unknown drugs\n"
                         "- Be very cautious with dosage and purpose. Do not invent anything."
+                        "You are an assistant that helps foreigners understand Korean medication instructions.\n"
+                        "You will receive OCR text with potential recognition errors.\n"
+                        "Correct the content and rewrite it clearly in a medication guide format, "
+                        "showing drug names, dosage, purpose, cautions, and storage instructions.\n"
+                        "If unclear, write 'uncertain' and avoid guessing new drug names."
                     )
                 },
                 {"role": "user", "content": text}
@@ -112,7 +114,7 @@ elif menu == "💊 Interpret Medication Image":
                         messages=messages
                     )
                     st.success("💡 Dori's Explanation")
-                    st.write(response.choices[0].message.content)
+                    display_medication_cards(response.choices[0].message.content)
                 except Exception as e:
                     st.error(f"GPT Error: {e}")
         except Exception as e:
