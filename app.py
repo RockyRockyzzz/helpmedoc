@@ -2,6 +2,10 @@ import streamlit as st
 from openai import OpenAI
 from dotenv import load_dotenv
 import pytesseract
+
+# Windows용 Tesseract 실행 파일 경로 설정
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
 from PIL import Image
 import os
 
