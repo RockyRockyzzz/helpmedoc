@@ -14,9 +14,9 @@ st.set_page_config(page_title="HelpMeDoc", layout="centered")
 st.title("💬 HelpMeDoc – Medical Assistant for Foreigners in Korea")
 st.markdown("Get help with symptoms, hospital navigation, and medication instructions.")
 
-menu = st.sidebar.selectbox("Choose a service", ["🦉 Chat with Dori", "💊 Interpret Medication Image"])
+menu = st.sidebar.selectbox("Choose a service", ["🩺 Chat with GPT", "💊 Interpret Medication Image"])
 
-if menu == "🦉 Chat with Dori":
+if menu == "🩺 Chat with GPT":
     user_input = st.text_input("Type your medical-related question here (in English)...")
     if user_input:
         messages = [
