@@ -1,7 +1,12 @@
-
 # HelpMeDoc
 
-An AI-powered Korean medical assistant chatbot designed for foreigners living in Korea.  
-Provides symptom-based department guidance, drug instruction interpretation (OCR), and translation support via GPT-4.
+An AI-powered Korean medical assistant chatbot designed for foreigners living in Korea.
 
-🚀 Built with Streamlit + OpenAI + Tesseract OCR  
+Features:
+- Symptom-based GPT chatbot
+- OCR image upload and medication explanation
+- Simple, Streamlit-powered interface
+
+Deploy this app using Streamlit Cloud for quick web access.
+
+GitHub: https://github.com/Rockyrockyzzz/helpmedoc
