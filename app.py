@@ -47,7 +47,6 @@ def load_hospital_data():
 
 # 💬 Chatbot
 if menu == "💬 Chat with Dori":
-    st.image("dori_2d.png", width=60)
     user_input = st.text_input("Ask Dori about symptoms, clinics, or emergencies...")
 
     if user_input:
