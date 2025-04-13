@@ -27,6 +27,7 @@ def display_medication_cards(text):
 st.set_page_config(page_title="HelpMeDoc", layout="centered")
 st.title("🦉 HelpMeDoc – Medical Assistant for Foreigners in Korea")
 st.image("dori.png", width=150, caption="Dori, your AI medical assistant 🦉")
+st.markdown("Get help with symptoms, hospital navigation, and medication instructions.")
 
 # 환경변수 로딩
 load_dotenv()
@@ -80,9 +81,9 @@ Always remind the user this is not a medical diagnosis and they should seek help
             try:
                 response = client.chat.completions.create(model="gpt-3.5-turbo", messages=messages)
                 with st.container():
-                    col1, col2 = st.columns([1, 5])
+                    col1, col2 = st.columns([1, 9])
                     with col1:
-                        st.image("dori_2d.png", width=60)
+                        st.image("dori_2d.png", width=50)
                     with col2:
                         st.markdown(f"""
                         <div style='
