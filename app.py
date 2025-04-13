@@ -60,16 +60,15 @@ Always remind the user this is not a medical diagnosis and they should seek help
                 st.error(f"GPT Error: {e}")
 
 elif menu == "💊 Interpret Medication Image":
-    col1, col2 = st.columns([1, 2])
-    with col1:
-        st.markdown("""### 📷 사진 촬영 가이드
-- 빛 반사 없이 찍어주세요
-- 종이를 펼쳐서 정면에서 찍어주세요
-- 텍스트가 잘 보이게 확대해주세요
+    st.markdown("### 📷 사진 촬영 가이드")
+    st.info("""
+- 빛 반사 없이 찍어주세요  
+- 종이를 펼쳐서 정면에서 찍어주세요  
+- 텍스트가 잘 보이게 확대해주세요  
 - 표 전체보다 '약 정보가 있는 부분' 중심으로 찍는 것이 더 정확합니다
-        """)
-    with col2:
-        uploaded_file = st.file_uploader("Upload a picture of your medication label", type=["png", "jpg", "jpeg"])
+    """)
+
+    uploaded_file = st.file_uploader("Upload a picture of your medication label", type=["png", "jpg", "jpeg"])
 
     if uploaded_file:
         try:
