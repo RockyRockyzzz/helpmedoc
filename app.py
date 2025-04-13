@@ -141,6 +141,12 @@ elif menu == "💊 Interpret Medication Image":
                         "You will receive OCR text with potential recognition errors.\n"
                         "Correct the content and rewrite it clearly in a medication guide format, "
                         "showing drug names, dosage, purpose, cautions, and storage instructions.\n"
+                        " - Always respond using the following format in English:
+                              Drug name: ...
+                              Purpose: ...
+                              Dosage instructions: ...
+                              Storage method: ..."
+
                         "If unclear, write 'uncertain' and avoid guessing new drug names."
                         "- Be very cautious with dosage and purpose. Do not invent anything."},
                 {"role": "user", "content": text}
