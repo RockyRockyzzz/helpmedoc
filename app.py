@@ -151,7 +151,7 @@ elif menu == "💊 Interpret Medication Image":
                         model="gpt-3.5-turbo",
                         messages=messages
                     )
-                    st.code(gpt_text) #응답원본확인 
+                    st.text(response.choices[0].message.content)
                     st.success("💡 Dori's Explanation")
                     display_medication_cards(response.choices[0].message.content)
                 except Exception as e:
