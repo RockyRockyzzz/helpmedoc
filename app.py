@@ -8,20 +8,36 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import folium
 from streamlit_folium import st_folium
-def display_medication_cards(text):
-    for block in text.strip().split("\n\n"):
-        if block.strip():
-            st.markdown(f"""
-            <div style='
-                background-color: #e6f2f1;
-                border-radius: 12px;
-                padding: 12px;
-                margin-bottom: 10px;
-                font-size: 16px;
-            '>
-            {block.strip().replace("\\n", "<br>")}
-            </div>
-            """, unsafe_allow_html=True)
+def display_medication_cards(gpt_text):
+    import streamlit as st
+    import re
+
+    # Split the text by each "Drug name" entry
+    drugs = re.split(r"(?=Drug name:)", gpt_text.strip())
+
+    for drug in drugs:
+        lines = drug.strip().splitlines()
+        if not lines or not lines[0].startswith("Drug name:"):
+            continue
+
+        name = lines[0].replace("Drug name:", "").strip()
+        purpose = dosage = storage = "Not specified"
+
+        for line in lines[1:]:
+            if "Purpose:" in line:
+                purpose = line.replace("Purpose:", "").strip()
+            elif "Dosage instructions:" in line:
+                dosage = line.replace("Dosage instructions:", "").strip()
+            elif "Storage method:" in line:
+                storage = line.replace("Storage method:", "").strip()
+
+        with st.container():
+            st.markdown("----")
+            st.subheader(f"💊 {name}")
+            st.markdown(f"**📌 Purpose:** {purpose}")
+            st.markdown(f"**🕐 Dosage:** {dosage}")
+            st.markdown(f"**📦 Storage:** {storage}")
+
 
 # 설정
 st.set_page_config(page_title="HelpMeDoc", layout="centered")
