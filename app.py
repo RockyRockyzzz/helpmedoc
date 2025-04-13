@@ -26,7 +26,7 @@ if menu == "🩺 Chat with GPT":
         with st.spinner("GPT is typing..."):
             try:
                 response = client.chat.completions.create(
-                    model="gpt-4",
+                    model="gpt-3.5-turbo",
                     messages=messages
                 )
                 st.success("Response:")
