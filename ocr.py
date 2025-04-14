@@ -31,7 +31,7 @@ Photos taken with the default camera are in HEIC format and may not upload prope
                         "showing drug names, dosage, purpose, cautions, and storage instructions.\n"
                         " You will receive OCR-extracted Korean medication information."
 
-""" Your job is to:
+                        """ Your job is to:
 1. Extract the drug names exactly as they appear.
 2. For each drug, if the name matches a real Korean medication, explain normally.
 3. If the name seems slightly incorrect or misspelled, try to guess the most likely correct name.
