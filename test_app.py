@@ -5,6 +5,7 @@ from openai import OpenAI
 from chat import run_chat_interface
 from ocr import run_ocr_interface
 from hospital import run_hospital_finder
+from utils.display import display_medication_cards
 
 st.set_page_config(page_title="HelpMeDoc", layout="centered")
 st.title("🦉 HelpMeDoc – Medical Assistant for Foreigners in Korea")
