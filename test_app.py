@@ -193,8 +193,9 @@ elif menu == "💊 Interpret Medication Image":
 - Avoid shadows and blur
 - Make sure the label is readable and centered
 - ✅ Only JPG, JPEG, PNG formats are supported
-- ⚠️ **iPhone users:** If you're uploading a photo, make sure it's in JPG format (not HEIC).  
-  If needed, take a screenshot of the photo and upload that.
+- ⚠️ **iPhone users:**  
+Photos taken with the default camera are in HEIC format and may not upload properly.  
+✅ We recommend opening the photo and taking a screenshot before uploading.
     """)
 
     uploaded_file = st.file_uploader("Upload a medication label image", type=["jpg", "jpeg", "png"])
