@@ -19,7 +19,6 @@ menu = st.sidebar.selectbox("Choose a service", ["💬 Chat with Dori", "💊 In
 if menu == "💬 Chat with Dori":
     run_chat_interface(client)
 elif menu == "💊 Interpret Medication Image":
-   
     run_ocr_interface(client)
 elif menu == "🏥 Hospital Finder":
     run_hospital_finder()
