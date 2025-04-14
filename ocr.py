@@ -15,7 +15,7 @@ def run_ocr_interface(client):
 - ⚠️ **iPhone users:**  
 Photos taken with the default camera are in HEIC format and may not upload properly.  
 ✅ We recommend opening the photo and taking a screenshot before uploading.
-    uploaded_file = st.file_uploader("Upload a medication label image", type=["jpg", "jpeg", "png"])
+    uploaded_file = st.file_uploader("Upload a medication label image", type=["jpg", "jpeg", "png"])"""
     if uploaded_file:
         try:
             image = Image.open(uploaded_file).convert("RGB")
