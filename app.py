@@ -22,3 +22,4 @@ elif menu == "💊 Interpret Medication Image":
     run_ocr_interface(client)
 elif menu == "🏥 Hospital Finder":
     run_hospital_finder()
+
