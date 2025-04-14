@@ -249,22 +249,35 @@ elif menu == "🏥 Hospital Finder":
     if df.empty:
         st.warning("No hospital data found.")
     else:
-        st.subheader("🏥 병원 탐색")
-        region = st.text_input("지역을 입력하세요 (예: 서울, 경기, 부산)", "")
-        department = st.selectbox("진료과목", [
-    "전체", "내과", "외과", "정형외과", "신경외과", "피부과", "안과", "이비인후과",
-    "정신건강의학과", "비뇨의학과", "재활의학과", "영상의학과", "마취통증의학과",
-    "소아청소년과", "산부인과", "치과", "가정의학과", "진단검사의학과", "응급의학과"
-])
+        st.subheader("🏥 Hospital Finder")
 
+        # English label → Korean value mapping
+        department_map = {
+            "All": "전체",
+            "Internal Medicine": "내과",
+            "Orthopedics": "정형외과",
+            "Pediatrics": "소아청소년과",
+            "Dermatology": "피부과",
+            "Ophthalmology": "안과",
+            "ENT": "이비인후과",
+            "Psychiatry": "정신건강의학과",
+            "Obstetrics and Gynecology": "산부인과",
+            "Dentistry": "치과",
+            "Urology": "비뇨의학과",
+            "Emergency Medicine": "응급의학과",
+        }
+
+        region = st.text_input("Enter a region (e.g., Seoul, Gyeonggi)", "")
+        department_eng = st.selectbox("Medical Department", list(department_map.keys()))
+        department_kor = department_map[department_eng]
 
         filtered = df.copy()
         if region:
             filtered = filtered[filtered["주소"].str.contains(region)]
-        if department != "전체":
-            filtered = filtered[filtered["진료과목"] == department]
+        if department_kor != "전체":
+            filtered = filtered[filtered["진료과목"].str.contains(department_kor)]
 
-        st.markdown(f"🔍 총 {len(filtered)}개 병원 검색됨")
+        st.markdown(f"🔍 {len(filtered)} hospitals found")
 
         if not filtered.empty:
             m = folium.Map(location=[filtered["위도"].mean(), filtered["경도"].mean()], zoom_start=12)
@@ -280,5 +293,5 @@ elif menu == "🏥 Hospital Finder":
             st.markdown(f"""**{row['병원명']}**  
 {row['주소']}  
 {row['전화번호']}  
-[카카오맵으로 보기](https://map.kakao.com/?q={row['병원명']})  
+[View on Kakao Map](https://map.kakao.com/?q={row['병원명']})  
 ---""")
