@@ -44,7 +44,7 @@ Dosage instructions: <as extracted>
 Storage method: <if mentioned>
 
 Only explain what can be reasonably inferred from the text. If unclear, say: 'not clearly recognized'."""
- """
+ """},
                 {"role": "user", "content": text}
             ]
             with st.spinner("Dori is analyzing the image..."):
