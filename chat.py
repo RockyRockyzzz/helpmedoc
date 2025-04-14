@@ -58,7 +58,7 @@ Always remind the user this is not a medical diagnosis and they should seek help
 
                 col1, col2 = st.columns([1, 9])
                 with col1:
-                    st.image("dori_2D.png", width=50)
+                    st.image("assets/dori_2D.png", width=50)
                 with col2:
                     st.markdown(f"""
                     <div style='
