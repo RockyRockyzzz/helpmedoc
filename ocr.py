@@ -6,6 +6,15 @@ from utils.display import display_medication_cards
 
 def run_ocr_interface(client):
     st.subheader("💊 Interpret Medication Image")
+    st.markdown("### 📷 Upload Guide")
+    st.info("""
+- Take a photo clearly under good lighting
+- Avoid shadows and blur
+- Make sure the label is readable and centered
+- ✅ Only JPG, JPEG, PNG formats are supported
+- ⚠️ **iPhone users:**  
+Photos taken with the default camera are in HEIC format and may not upload properly.  
+✅ We recommend opening the photo and taking a screenshot before uploading.
     uploaded_file = st.file_uploader("Upload a medication label image", type=["jpg", "jpeg", "png"])
     if uploaded_file:
         try:
