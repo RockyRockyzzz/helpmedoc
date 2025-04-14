@@ -75,10 +75,10 @@ if menu == "💬 Chat with Dori":
     col1, col2 = st.columns([8, 1])  # 비율은 필요 시 조절 가능
 
     with col1:
-    user_input = st.text_input("Ask Dori about symptoms, clinics, or emergencies...", label_visibility="collapsed", key="user_input")
+        user_input = st.text_input("Ask Dori about symptoms, clinics, or emergencies...", label_visibility="collapsed", key="user_input")
 
     with col2:
-    submitted = st.button("↩️", use_container_width=True)
+        submitted = st.button("↩️", use_container_width=True)
 
     if submitted and user_input:
     # GPT 응답 처리
