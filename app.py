@@ -72,6 +72,36 @@ def load_hospital_data():
 
 # 💬 Chatbot
 if menu == "💬 Chat with Dori":
+    st.markdown("""
+        <style>
+        [data-testid="stAppViewContainer"] {
+            background-color: #E0F7FA;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
+    # 버튼 스타일 + 입력창 + 제출 버튼
+    st.markdown("""
+        <style>
+        div.stButton > button {
+            background-color: #FFCCBC;
+            color: #333333;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            border: none;
+            font-size: 16px;
+            transition: background-color 0.2s ease;
+        }
+
+        div.stButton > button:hover {
+            background-color: #FFAB91;
+        }
+
+        div.stButton > button:active {
+            background-color: #FF8A65;
+        }
+        </style>
+    """, unsafe_allow_html=True)
     col1, col2 = st.columns([8, 1])  # 비율은 필요 시 조절 가능
 
     with col1:
