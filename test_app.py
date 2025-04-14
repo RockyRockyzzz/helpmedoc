@@ -185,25 +185,30 @@ Always remind the user this is not a medical diagnosis and they should seek help
 
 # 💊 OCR 해석
 elif menu == "💊 Interpret Medication Image":
-    st.markdown("### 📷 약 사진 촬영 가이드")
+    st.subheader("💊 Interpret Medication Image")
+
+    st.markdown("### 📷 Upload Guide")
     st.info("""
-- 빛 반사 없이 찍어주세요  
-- 종이를 펼쳐서 정면에서 찍어주세요  
-- 텍스트가 잘 보이게 확대해주세요  
-- 표 전체보다 '약 정보가 있는 부분' 중심으로 찍는 것이 더 정확합니다
+- Take a photo clearly under good lighting
+- Avoid shadows and blur
+- Make sure the label is readable and centered
+- ✅ Only JPG, JPEG, PNG formats are supported
+- ⚠️ **iPhone users:** If you're uploading a photo, make sure it's in JPG format (not HEIC).  
+  If needed, take a screenshot of the photo and upload that.
     """)
 
-    uploaded_file = st.file_uploader("Upload your medication image", type=["png", "jpg", "jpeg"])
+    uploaded_file = st.file_uploader("Upload a medication label image", type=["jpg", "jpeg", "png"])
+
     if uploaded_file:
         try:
-            image = Image.open(uploaded_file)
+            image = Image.open(uploaded_file).convert("RGB")  # Force RGB
             image_np = np.array(image)
             st.image(image, caption="Uploaded Image", use_column_width=True)
 
             reader = easyocr.Reader(['ko'], gpu=False)
             result = reader.readtext(image_np, detail=0)
             text = " ".join(result)
-
+            #GPT 프롬프트
             messages = [
                 {"role": "system", "content": "You are an assistant that helps foreigners understand Korean medication instructions.\n"
                         "You will receive OCR text with potential recognition errors.\n"
