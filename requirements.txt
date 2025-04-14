@@ -1,0 +1,9 @@
+streamlit
+openai
+python-dotenv
+pandas
+numpy
+easyocr
+Pillow
+folium
+streamlit-folium
