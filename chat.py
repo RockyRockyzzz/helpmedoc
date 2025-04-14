@@ -1,6 +1,27 @@
 import streamlit as st
 
 def run_chat_interface(client):
+      st.markdown("""
+        <style>
+        div.stButton > button {
+            background-color: #FFCCBC;
+            color: #333333;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            border: none;
+            font-size: 16px;
+            transition: background-color 0.2s ease;
+        }
+
+        div.stButton > button:hover {
+            background-color: #FFAB91;
+        }
+
+        div.stButton > button:active {
+            background-color: #FF8A65;
+        }
+        </style>
+    """, unsafe_allow_html=True)
     col1, col2 = st.columns([8, 1])
     with col1:
         user_input = st.text_input("Ask Dori about symptoms, clinics, or emergencies...", label_visibility="collapsed", key="user_input")
