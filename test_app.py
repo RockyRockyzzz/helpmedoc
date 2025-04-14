@@ -17,9 +17,9 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 menu = st.sidebar.selectbox("Choose a service", ["💬 Chat with Dori", "💊 Interpret Medication Image", "🏥 Hospital Finder"])
 
 if menu == "💬 Chat with Dori":
-    uploaded_file = st.file_uploader("Upload your image", type=["jpg", "png"])
     run_chat_interface(client)
 elif menu == "💊 Interpret Medication Image":
+    uploaded_file = st.file_uploader("Upload your image", type=["jpg", "png"])
     run_ocr_interface(client)
 elif menu == "🏥 Hospital Finder":
     run_hospital_finder()
