@@ -29,7 +29,7 @@ Photos taken with the default camera are in HEIC format and may not upload prope
                         "You will receive OCR text with potential recognition errors.\n"
                         "Correct the content and rewrite it clearly in a medication guide format, "
                         "showing drug names, dosage, purpose, cautions, and storage instructions.\n"
-                        """  You will receive OCR-extracted Korean medication information. 
+                        """ You will receive OCR-extracted Korean medication information. 
 
 Your job is to:
 1. Extract the drug names exactly as they appear.
