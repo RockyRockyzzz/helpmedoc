@@ -108,7 +108,7 @@ if menu == "💬 Chat with Dori":
         user_input = st.text_input("Ask Dori about symptoms, clinics, or emergencies...", label_visibility="collapsed", key="user_input")
 
     with col2:
-        submitted = st.button("↩️", use_container_width=True)
+        submitted = st.button("↑", use_container_width=True)
 
     if submitted and user_input:
     # GPT 응답 처리
