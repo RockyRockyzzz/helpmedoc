@@ -122,17 +122,38 @@ You help them understand symptoms in simple English, and tell them which departm
 Give clear, non-diagnostic guidance and practical tips like what kind of clinic to visit, how to say symptoms in Korean, and whether it's urgent.
 Do not make medical diagnoses or suggest medications. Avoid suggesting generic home remedies unless no other option is relevant.
 
-If you mention or recommend any department (진료과), such as 내과 (internal medicine), 정형외과 (orthopedic), 피부과 (dermatology), etc., ALWAYS include a clickable Kakao Map link in the format:
+If you mention or recommend any department (진료과), such as 내과 (internal medicine), 정형외과 (orthopedic), 피부과 (dermatology), **or 응급실 (emergency room)**, ALWAYS include a clickable Kakao Map link in the format:
 https://map.kakao.com/?q=진료과명
-(e.g. https://map.kakao.com/?q=내과).
+(e.g. https://map.kakao.com/?q=내과 or https://map.kakao.com/?q=응급실).
 This should be shown even if the user doesn’t specify a region.
 
-For symptoms, follow a triage guideline similar to the Korean Triage and Acuity Scale (KTAS).
-Classify into:
-1. Emergency – Recommend 응급실 if symptoms include chest pain, severe pain, vomiting with fever, confusion, loss of consciousness, or danger signs in elderly, children, or pregnancy.
-2. Concerning – Recommend clinic within 24h for symptoms like moderate pain, ongoing fever, worsening conditions.
-3. Mild – Suggest monitoring and clinic if no improvement in 1–2 days.
+Use triage guidance based on the Korean Triage and Acuity Scale (KTAS) and Korea's official list of emergency symptoms defined by law.
 
+For symptoms, classify into:
+1. Emergency – Recommend 응급실 (emergency room) if symptoms include:
+   - Chest pain or pressure
+   - Difficulty breathing
+   - Severe or sudden abdominal pain
+   - Loss of consciousness
+   - Severe bleeding
+   - Seizures or convulsions
+   - High fever with vomiting or confusion
+   - Any danger signs in elderly, children, or pregnant individuals
+   - Symptoms of stroke (e.g. facial droop, slurred speech, limb weakness)
+   - Severe trauma or burns
+   These match emergency symptoms listed by Korean law.
+
+2. Concerning – Recommend visiting a clinic within 24 hours if symptoms include:
+   - Moderate pain or ongoing fever
+   - Symptoms that are worsening or spreading
+   - Persistent dizziness, mild shortness of breath
+   - Early infection signs without high risk
+
+3. Mild – Suggest home monitoring and visiting clinic if no improvement in 1–2 days.
+   - Examples: mild sore throat, minor cough, fatigue, muscle aches
+
+Always include this reminder:
+"This is not a medical diagnosis. If unsure or symptoms worsen, visit a doctor or emergency room.
 Always remind the user this is not a medical diagnosis and they should seek help if unsure.
 """
             },
@@ -164,25 +185,31 @@ Always remind the user this is not a medical diagnosis and they should seek help
 
 # 💊 OCR 해석
 elif menu == "💊 Interpret Medication Image":
-    st.markdown("### 📷 약 사진 촬영 가이드")
+    st.subheader("💊 Interpret Medication Image")
+
+    st.markdown("### 📷 Upload Guide")
     st.info("""
-- 빛 반사 없이 찍어주세요  
-- 종이를 펼쳐서 정면에서 찍어주세요  
-- 텍스트가 잘 보이게 확대해주세요  
-- 표 전체보다 '약 정보가 있는 부분' 중심으로 찍는 것이 더 정확합니다
+- Take a photo clearly under good lighting
+- Avoid shadows and blur
+- Make sure the label is readable and centered
+- ✅ Only JPG, JPEG, PNG formats are supported
+- ⚠️ **iPhone users:**  
+Photos taken with the default camera are in HEIC format and may not upload properly.  
+✅ We recommend opening the photo and taking a screenshot before uploading.
     """)
 
-    uploaded_file = st.file_uploader("Upload your medication image", type=["png", "jpg", "jpeg"])
+    uploaded_file = st.file_uploader("Upload a medication label image", type=["jpg", "jpeg", "png"])
+
     if uploaded_file:
         try:
-            image = Image.open(uploaded_file)
+            image = Image.open(uploaded_file).convert("RGB")  # Force RGB
             image_np = np.array(image)
             st.image(image, caption="Uploaded Image", use_column_width=True)
 
             reader = easyocr.Reader(['ko'], gpu=False)
             result = reader.readtext(image_np, detail=0)
             text = " ".join(result)
-
+            #GPT 프롬프트
             messages = [
                 {"role": "system", "content": "You are an assistant that helps foreigners understand Korean medication instructions.\n"
                         "You will receive OCR text with potential recognition errors.\n"
@@ -228,22 +255,35 @@ elif menu == "🏥 Hospital Finder":
     if df.empty:
         st.warning("No hospital data found.")
     else:
-        st.subheader("🏥 병원 탐색")
-        region = st.text_input("지역을 입력하세요 (예: 서울, 경기, 부산)", "")
-        department = st.selectbox("진료과목", [
-    "전체", "내과", "외과", "정형외과", "신경외과", "피부과", "안과", "이비인후과",
-    "정신건강의학과", "비뇨의학과", "재활의학과", "영상의학과", "마취통증의학과",
-    "소아청소년과", "산부인과", "치과", "가정의학과", "진단검사의학과", "응급의학과"
-])
+        st.subheader("🏥 Hospital Finder")
 
+        # English label → Korean value mapping
+        department_map = {
+            "All": "전체",
+            "Internal Medicine": "내과",
+            "Orthopedics": "정형외과",
+            "Pediatrics": "소아청소년과",
+            "Dermatology": "피부과",
+            "Ophthalmology": "안과",
+            "ENT": "이비인후과",
+            "Psychiatry": "정신건강의학과",
+            "Obstetrics and Gynecology": "산부인과",
+            "Dentistry": "치과",
+            "Urology": "비뇨의학과",
+            "Emergency Medicine": "응급의학과",
+        }
+
+        region = st.text_input("Enter a region (e.g., Seoul, Gyeonggi)", "")
+        department_eng = st.selectbox("Medical Department", list(department_map.keys()))
+        department_kor = department_map[department_eng]
 
         filtered = df.copy()
         if region:
             filtered = filtered[filtered["주소"].str.contains(region)]
-        if department != "전체":
-            filtered = filtered[filtered["진료과목"] == department]
+        if department_kor != "전체":
+            filtered = filtered[filtered["진료과목"].str.contains(department_kor)]
 
-        st.markdown(f"🔍 총 {len(filtered)}개 병원 검색됨")
+        st.markdown(f"🔍 {len(filtered)} hospitals found")
 
         if not filtered.empty:
             m = folium.Map(location=[filtered["위도"].mean(), filtered["경도"].mean()], zoom_start=12)
@@ -259,5 +299,5 @@ elif menu == "🏥 Hospital Finder":
             st.markdown(f"""**{row['병원명']}**  
 {row['주소']}  
 {row['전화번호']}  
-[카카오맵으로 보기](https://map.kakao.com/?q={row['병원명']})  
+[View on Kakao Map](https://map.kakao.com/?q={row['병원명']})  
 ---""")
