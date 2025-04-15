@@ -40,4 +40,6 @@ elif menu == "💊 Interpret Medication Image":
     run_ocr_interface(client)
 elif menu == "🏥 Hospital Finder":
     run_hospital_finder()
+else:
+    st.write("🚨 메뉴 항목이 잘못되었거나 로딩되지 않았습니다.")
 
