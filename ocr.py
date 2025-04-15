@@ -1,6 +1,9 @@
 import streamlit as st
 import numpy as np
-import easyocr
+try:
+    import easyocr
+except ImportError:
+    easyocr = None
 from PIL import Image
 from utils.display import display_medication_cards
 
@@ -16,6 +19,9 @@ def run_ocr_interface(client):
 Photos taken with the default camera are in HEIC format and may not upload properly.  
 ✅ We recommend opening the photo and taking a screenshot before uploading.""")
     uploaded_file = st.file_uploader("Upload a medication label image", type=["jpg", "jpeg", "png"])
+    if easyocr is None:
+    st.error("🧠 OCR 기능을 사용하려면 easyocr 설치가 필요합니다.")
+    return
     if uploaded_file:
         try:
             image = Image.open(uploaded_file).convert("RGB")
