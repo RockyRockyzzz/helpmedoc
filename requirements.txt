@@ -3,8 +3,9 @@ openai
 python-dotenv
 pandas
 numpy
-easyocr
-torch
+torch==1.12.1+cpu
+easyocr==1.4.1
+-f https://download.pytorch.org/whl/torch_stable.html
 Pillow
 folium
 streamlit-folium
