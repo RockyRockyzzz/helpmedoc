@@ -4,8 +4,7 @@ python-dotenv
 pandas
 numpy
 easyocr
-torch==1.12.1+cpu
--f https://download.pytorch.org/whl/torch_stable.html
+torch
 Pillow
 folium
 streamlit-folium
