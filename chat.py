@@ -63,6 +63,9 @@ Classify into:
 2. Concerning – Recommend clinic within 24h for symptoms like moderate pain, ongoing fever, worsening conditions.
 3. Mild – Suggest monitoring and clinic if no improvement in 1–2 days.
 
+             Do not make a diagnosis.  
+However, you may mention possible related conditions as long as you clearly state that they are examples, not definitive diagnoses.  
+Use phrasing like: "These symptoms are commonly seen in conditions such as ___, but this is not a diagnosis.
 Always remind the user this is not a medical diagnosis and they should seek help if unsure.
 """},
             {"role": "user", "content": user_input}
