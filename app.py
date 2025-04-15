@@ -1,12 +1,12 @@
 import streamlit as st
-st.set_page_config(page_title="HelpMeDoc", layout="centered")
 from dotenv import load_dotenv
 import os
 from openai import OpenAI
 from chat import run_chat_interface
 from ocr import run_ocr_interface
 from hospital import run_hospital_finder
-
+st.set_page_config(page_title="HelpMeDoc", layout="centered")
+st.write("✅ App started")
 with st.sidebar:
     st.header("👤 User Profile")
     user_age = st.number_input("Age", min_value=1, max_value=120, step=1)
@@ -33,9 +33,13 @@ user_info = {
 }
 
 if menu == "💬 Chat with Dori":
+    st.write("💬 Chat with Dori 탭 진입")
     run_chat_interface(client, user_info=user_info)
 elif menu == "💊 Interpret Medication Image":
+    st.write("💊 Interpret Medication Image 탭 진입")
     run_ocr_interface(client)
 elif menu == "🏥 Hospital Finder":
+    st.write("🏥 Hospital Finder 탭 진입")
     run_hospital_finder()
-
+else:
+    st.write("🚨 메뉴 항목이 잘못되었거나 로딩되지 않았습니다.")
