@@ -1,12 +1,13 @@
 import streamlit as st
-st.set_page_config(page_title="HelpMeDoc", layout="centered")
-st.write("✅ App started")
+
 from dotenv import load_dotenv
 import os
 from openai import OpenAI
 from chat import run_chat_interface
 from ocr import run_ocr_interface
 from hospital import run_hospital_finder
+st.set_page_config(page_title="HelpMeDoc", layout="centered")
+st.write("✅ App started")
 
 with st.sidebar:
     st.header("👤 User Profile")
