@@ -1,5 +1,6 @@
 import streamlit as st
 st.set_page_config(page_title="HelpMeDoc", layout="centered")
+st.write("✅ App started")
 from dotenv import load_dotenv
 import os
 from openai import OpenAI
