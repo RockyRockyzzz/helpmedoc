@@ -1,6 +1,6 @@
 import streamlit as st
 
-def run_chat_interface(client):
+def run_chat_interface(client, user_info=None):
     st.markdown("""
         <style>
         div.stButton > button {
@@ -30,6 +30,13 @@ def run_chat_interface(client):
         submitted = st.button("↑", use_container_width=True)
 
     if submitted and user_input:
+        user_context = f"""
+User Information:
+- Age: {user_info['age']}
+- Gender: {user_info['gender']}
+- Pregnant: {'Yes' if user_info['pregnant'] else 'No'}
+- Preferred Language: {user_info['language']}
+"""
         messages = [
             {"role": "system", "content": """You are a friendly and knowledgeable medical assistant helping foreigners living in Korea.
 You help them understand symptoms in simple English, and tell them which department (진료과) to visit at a Korean hospital.
@@ -41,6 +48,15 @@ https://map.kakao.com/?q=진료과명
 (e.g. https://map.kakao.com/?q=내과).
 This should be shown even if the user doesn’t specify a region.
 
+             You are a medically-informed AI assistant trained to support foreigners navigating the Korean healthcare system.  
+Your role is to provide department recommendations based on symptoms, guide appropriate triage decisions (based on Korean Triage and Acuity Scale, KTAS), and offer medically-informed explanations — all in clear, non-diagnostic English.
+
+{user_context}
+
+When responding, consider age-appropriate and gender-sensitive medical communication.
+Do not make diagnoses. Use simple words.
+
+Never provide a medical diagnosis or medication advice. Emphasize when symptoms require urgent evaluation (e.g. 응급실), and provide hospital navigation support with Kakao Map links.
 For symptoms, follow a triage guideline similar to the Korean Triage and Acuity Scale (KTAS).
 Classify into:
 1. Emergency – Recommend 응급실 if symptoms include chest pain, severe pain, vomiting with fever, confusion, loss of consciousness, or danger signs in elderly, children, or pregnancy.
