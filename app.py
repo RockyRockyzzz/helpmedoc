@@ -32,7 +32,7 @@ user_info = {
     "pregnant": is_pregnant,
     "language": user_language
 }
-
+st.sidebar.write("✅ 메뉴 로딩 중...")
 if menu == "💬 Chat with Dori":
     run_chat_interface(client, user_info=user_info)
 elif menu == "💊 Interpret Medication Image":
