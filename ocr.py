@@ -1,8 +1,43 @@
 import streamlit as st
 import numpy as np
 import easyocr
+import requests
+import xml.etree.ElementTree as ET
+import urllib.parse
+from fuzzywuzzy import fuzz
 from PIL import Image
 from utils.display import display_medication_cards
+
+SERVICE_KEY = "O0wI7BmTCPHgoS8Trmp9INLhy1qVqdWR/wUaKnlnTDeY/ZNsc4wrkOqolStMSZoHjdjJ8GEoL1MxqmGyMc6vxA=="
+ENCODED_KEY = urllib.parse.quote(SERVICE_KEY, safe='')
+
+def fetch_drug_list(keyword, max_rows=10):
+    keyword = keyword.strip()
+    if not keyword:
+        return []
+
+    url = f"https://apis.data.go.kr/1471000/DrbEasyDrugInfoService/getDrbEasyDrugList"
+    full_url = f"{url}?serviceKey={ENCODED_KEY}&itemName={urllib.parse.quote(keyword)}&pageNo=1&numOfRows={max_rows}"
+
+    try:
+        res = requests.get(full_url, timeout=5)
+        res.raise_for_status()
+        root = ET.fromstring(res.text)
+        names = [item.findtext("itemName").strip() for item in root.iter("item") if item.findtext("itemName")]
+        return names
+    except Exception as e:
+        print("❌ fetch_drug_list error:", e)
+        return []
+
+def get_best_match(ocr_text, drug_list):
+    best_score = 0
+    best_match = None
+    for name in drug_list:
+        score = fuzz.ratio(ocr_text, name)
+        if score > best_score:
+            best_score = score
+            best_match = name
+    return best_match, best_score
 
 def run_ocr_interface(client):
     st.subheader("💊 Interpret Medication Image")
@@ -24,6 +59,17 @@ Photos taken with the default camera are in HEIC format and may not upload prope
             reader = easyocr.Reader(['ko'], gpu=False)
             result = reader.readtext(image_np, detail=0)
             text = " ".join(result)
+            # 2. 약물명 유사도 기반 정제
+            drug_list = fetch_drug_list(text)
+            best_match, score = get_best_match(text, drug_list)
+
+            # 3. GPT에 넘길 약 이름 구성
+            if score >= 90:
+                drug_name = best_match
+            elif score >= 70:
+                drug_name = f"{text} (possibly: {best_match})"
+            else:
+                drug_name = f"{text} (possibly: unknown)"
             messages = [
                 {"role": "system", "content": "You are an assistant that helps foreigners understand Korean medication instructions.\n"
                         "You will receive OCR text with potential recognition errors.\n"
@@ -47,7 +93,7 @@ Only explain what can be reasonably inferred from the text. If unclear, say: 'no
  """
 
                         },
-                {"role": "user", "content": text}
+                {"role": "user", "content": drug_name}
             ]
             with st.spinner("Dori is analyzing the image..."):
                 try:
