@@ -1,4 +1,7 @@
 import streamlit as st
+st.set_page_config(page_title="🧪 HelpMeDoc Debug", layout="centered")
+st.title("✅ HelpMeDoc 앱이 정상 실행되었습니다")
+st.write("이 화면이 보인다면 Streamlit 배포는 성공한 것입니다.")
 from dotenv import load_dotenv
 import os
 from openai import OpenAI
