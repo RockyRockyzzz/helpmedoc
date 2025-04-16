@@ -3,6 +3,8 @@ openai
 python-dotenv
 pandas
 numpy
+easyocr
+torch
 Pillow
 folium
 streamlit-folium

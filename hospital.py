@@ -1,76 +1,54 @@
 
 import streamlit as st
-import requests
-import xml.etree.ElementTree as ET
-import urllib.parse
-import json
-
-department_code_map = {"내과": "01", "정형외과": "02", "소아청소년과": "03", "피부과": "04", "안과": "05", "이비인후과": "06", "정신건강의학과": "07", "산부인과": "08", "치과": "49", "비뇨의학과": "09", "응급의학과": "10"}
-sido_sggu_map = {
-    "서울특별시": {
-        "code": "110000",
-        "districts": {
-            "강남구": "110019",
-            "강동구": "110020",
-            "강북구": "110021",
-            "강서구": "110022"
-        }
-    },
-    "경기도": {
-        "code": "410000",
-        "districts": {
-            "수원시 장안구": "411111",
-            "수원시 권선구": "411113",
-            "수원시 팔달구": "411115",
-            "수원시 영통구": "411117"
-        }
-    }
-}
+import pandas as pd
 
 @st.cache_data
-def fetch_hospitals(dgsbjt_code, sido_code, sggu_code=None, num_rows=20):
-    service_key = "O0wI7BmTCPHgoS8Trmp9INLhy1qVqdWR/wUaKnlnTDeY/ZNsc4wrkOqolStMSZoHjdjJ8GEoL1MxqmGyMc6vxA=="
-    encoded_key = urllib.parse.quote(service_key, safe='')
+def load_hospital_data():
+    df = pd.read_csv("assets/seongnam_hospital_with_departments.csv", encoding="utf-8-sig")
+    return df
 
-    base_url = "https://apis.data.go.kr/B551182/hospInfoService2/getHospBasisList"
-    query = f"?serviceKey={encoded_key}&sidoCd={sido_code}&dgsbjtCd={dgsbjt_code}&pageNo=1&numOfRows={num_rows}"
-    if sggu_code:
-        query += f"&sgguCd={sggu_code}"
-    url = base_url + query
-
-    try:
-        res = requests.get(url, timeout=5,verify=False)
-        res.raise_for_status()
-        root = ET.fromstring(res.text)
-        hospitals = []
-        for item in root.iter("item"):
-            name = item.findtext("yadmNm", default="").strip()
-            addr = item.findtext("addr", default="").strip()
-            tel = item.findtext("telno", default="").strip()
-            hospitals.append({"병원명": name, "주소": addr, "전화번호": tel})
-        return hospitals
-    except Exception as e:
-        st.error(f"API Error: {e}")
-        return []
+# 법정동 기준으로 구 분류
+법정동_구_맵 = {
+    "정자동": "분당구", "서현동": "분당구", "이매동": "분당구", "야탑동": "분당구",
+    "백현동": "분당구", "삼평동": "분당구", "판교동": "분당구", "수내동": "분당구", "금곡동": "분당구",
+    "수진동": "수정구", "신흥동": "수정구", "단대동": "수정구", "산성동": "수정구",
+    "양지동": "수정구", "복정동": "수정구", "위례동": "수정구", "신촌동": "수정구",
+    "중앙동": "중원구", "성남동": "중원구", "하대원동": "중원구", "상대원동": "중원구",
+    "금광동": "중원구", "은행동": "중원구"
+}
 
 def run_hospital_finder():
-    st.subheader("🏥 병원 탐색 (URL 조립 방식)")
-    department = st.selectbox("진료과 선택", list(department_code_map.keys()))
-    region = st.selectbox("시/도 선택", list(sido_sggu_map.keys()))
-    sub_region = st.selectbox("시/군/구 선택", list(sido_sggu_map[region]["districts"].keys()))
+    st.subheader("🏥 성남시 병원 탐색")
+    df = load_hospital_data()
 
-    if st.button("🔍 병원 검색"):
-        dgsbjt_code = department_code_map[department]
-        sido_code = sido_sggu_map[region]["code"]
-        sggu_code = sido_sggu_map[region]["districts"][sub_region]
-        hospitals = fetch_hospitals(dgsbjt_code, sido_code, sggu_code)
-        st.markdown(f"### 🔎 {{len(hospitals)}}개 병원 검색됨")
+    # '구' 추가
+    df["구"] = df["법정동"].map(법정동_구_맵).fillna("기타")
 
-        for hosp in hospitals:
-            st.markdown(f"""
-**{{hosp['병원명']}}**  
-📍 {{hosp['주소']}}  
-📞 {{hosp['전화번호']}}  
-[카카오맵에서 보기](https://map.kakao.com/?q={{urllib.parse.quote(hosp['병원명'])}})  
+    # 구 선택
+    구목록 = ["전체"] + sorted(df["구"].unique().tolist())
+    선택구 = st.selectbox("📍 구 선택", 구목록)
+    if 선택구 != "전체":
+        df = df[df["구"] == 선택구]
+
+    # 법정동 선택
+    동목록 = ["전체"] + sorted(df["법정동"].dropna().unique().tolist())
+    선택동 = st.selectbox("🧭 법정동 선택", 동목록)
+    if 선택동 != "전체":
+        df = df[df["법정동"] == 선택동]
+
+    # 진료과 선택
+    진료과목목록 = ["전체"] + sorted(df["진료과"].dropna().unique().tolist())
+    선택진료과 = st.selectbox("🩺 진료과 선택", 진료과목목록)
+    if 선택진료과 != "전체":
+        df = df[df["진료과"] == 선택진료과]
+
+    st.markdown(f"### 🔎 검색 결과: {len(df)}개 병원")
+
+    for _, row in df.iterrows():
+        st.markdown(f"""
+**{row['의료기관명']}**  
+📍 {row['의료기관주소(도로명)']}  
+📞 {row['의료기관전화번호']}  
+[카카오맵에서 보기](https://map.kakao.com/?q={row['의료기관명']})  
 ---
 """)
